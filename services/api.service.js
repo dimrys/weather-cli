@@ -16,6 +16,7 @@ const getWeather = async (city) => {
             units: 'metric'
         }
     })
+
     return data
 }
 

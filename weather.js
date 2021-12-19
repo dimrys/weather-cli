@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { getArgs} from "./helpers/args.js"
+import {getArgs} from "./helpers/args.js"
 import {printHelp, printSuccess, printError} from "./services/log.service.js";
 import {saveKeyValue, TOKEN_DICTIONARY} from "./services/storage.service.js";
 import {getWeather} from "./services/api.service.js";
@@ -18,18 +18,36 @@ const saveToken = async (token) => {
 
 }
 
-const initCli = () => {
-    const args = getArgs(process.argv)
-    if(args.h) {
-        printHelp()
-    }
-    if(args.s) {
+const getForcast = async () => {
+    try {
+        const weather = await getWeather('minsk')
+        console.log(weather)
+    } catch (e) {
+        if (e?.response?.status === 404) {
+            printError('Неверно указан город')
+        } else if (e?.response?.status === 401) {
+            printError('Неверно указан токен')
+        } else {
+            printError(e.message)
+        }
 
     }
-    if(args.t) {
+
+}
+
+const initCli = () => {
+    const args = getArgs(process.argv)
+    if (args.h) {
+        printHelp()
+    }
+    if (args.s) {
+
+    }
+    if (args.t) {
         return saveToken(args.t)
     }
-    getWeather('moscow')
+    getForcast()
+
 }
 
 initCli()
